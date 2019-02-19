@@ -4,7 +4,55 @@ define('DB_NAME', 'urls');
 define('DB_USER', 'urls');
 define('DB_PASSWORD', 'urls');
 define('DB_HOST', 'localhost:8889');
-define('DB_TABLE', 'shortenedurls');
+define('DB_TABLE', 'shorturls');
+
+// base location of script (include trailing slash)
+define('BASE_HREF', 'http://' . $_SERVER['HTTP_HOST'] . '/');
+
+// change to limit short url creation to a single IP
+define('LIMIT_TO_IP', $_SERVER['REMOTE_ADDR']);
+
+// check if URL to avoid saving pages that don't exist
+define('CHECK_URL', TRUE);
+
+// shortened URL allowed characters. Don't include chars that create erros when using the cache feature (file cration)
+define('ALLOWED_CHARS', '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+
+// do you want to cache? (to speed up checking, the script checks a file version for the link if exists first, if not, reads the DB)
+define('CACHE', TRUE);
+
+// what extension you want for your links ?
+define('CACHE_EXTENSION', ".url");
+
+// where the cache files will be stored? (include trailing slash)
+define('CACHE_DIR', dirname(__FILE__) . '/cache/');
+
+
+function getShortenedURLFromID ($integer, $base = ALLOWED_CHARS)
+{
+	$length = strlen($base);
+	$out ="";
+
+	while($integer > $length - 1)
+	{
+		$out = $base[fmod($integer, $length)] . $out;
+		$integer = floor( $integer / $length );
+	}
+	return $base[$integer] . $out;
+}
+
+function getIDFromShortenedURL ($string, $base = ALLOWED_CHARS)
+{
+	$length = strlen($base);
+	$size = strlen($string) - 1;
+	$string = str_split($string);
+	$out = strpos($base, array_pop($string));
+	foreach($string as $i => $char)
+	{
+		$out += strpos($base, $char) * pow($length, $size - $i);
+	}
+	return $out;
+}
 
 
 try {
@@ -20,4 +68,3 @@ try {
     exit;
   }
 
-?>
