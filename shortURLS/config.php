@@ -12,13 +12,14 @@ define('BASE_HREF', 'http://' . $_SERVER['HTTP_HOST'] . '/');
 // change to limit short url creation to a single IP
 define('LIMIT_TO_IP', $_SERVER['REMOTE_ADDR']);
 
-// check if URL to avoid saving pages that don't exist
+// check if URL first to avoid saving pages that don't exist
 define('CHECK_URL', TRUE);
 
-// shortened URL allowed characters. Don't include chars that create erros when using the cache feature (file cration)
-define('ALLOWED_CHARS', '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+// URL allowed characters. Don't include chars that create errors when using the cache feature 
+// (when creating a file on the server, those characters are used for the filename)
+define('ALLOWED_CHARS', '0123456789abdeghijklmnopqrstuvwxyzABDEGHIJKLMNOPQRSTUVWXYZ');
 
-// do you want to cache? (to speed up checking, the script checks a file version for the link if exists first, if not, reads the DB)
+// want cache? (to speed up checking, the script checks a file version for the link if exists first, if not, reads the DB)
 define('CACHE', TRUE);
 
 // what extension you want for your links ?
